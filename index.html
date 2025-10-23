@@ -30,7 +30,19 @@
     .review{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-top:12px}
     .review strong{color:var(--accent)}
     footer{margin-top:50px;text-align:center;color:var(--muted);font-size:13px}
-    @media(max-width:900px){.hero{grid-template-columns:1fr;text-align:center}}
+
+    /* VIDEO STYLES */
+    .video-card{position:relative;padding:0;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:260px}
+    .video-card video{width:100%;height:100%;object-fit:cover;display:block}
+    .video-overlay{
+      position:absolute;left:12px;right:12px;bottom:12px;padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,rgba(0,0,0,0.45),rgba(0,0,0,0.25));backdrop-filter:blur(4px);
+      display:flex;flex-direction:column;gap:6px;align-items:flex-start;
+    }
+    .video-overlay .line1{font-weight:700;color:var(--accent);font-size:18px}
+    .video-overlay .line2{color:#fff;font-size:14px}
+    .video-controls{position:absolute;top:12px;right:12px;display:flex;gap:8px}
+    .mini-btn{background:rgba(0,0,0,0.45);padding:8px;border-radius:8px;color:var(--text);font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,0.04)}
+    @media(max-width:900px){.hero{grid-template-columns:1fr;text-align:center}.video-overlay{left:8px;right:8px;bottom:8px;align-items:center;text-align:center}}
   </style>
 </head>
 <body>
@@ -50,9 +62,26 @@
           <li>✔️ Entrega rápida e segura pela Amazon Brasil</li>
         </ul>
       </div>
-      <div class="card" style="text-align:center;">
-        <div style="font-size:80px;">📺</div>
-        <p style="margin-top:8px;color:var(--muted);">Sua TV comum vira Smart em segundos!</p>
+
+      <!-- AQUI: substituímos o cartão da direita pelo player de vídeo -->
+      <div class="card video-card" style="padding:0;">
+        <!-- video element: coloque tvvideo.mp4 na mesma pasta deste HTML -->
+        <video id="promoVideo" playsinline autoplay muted loop controls preload="metadata">
+          <source src="tvvideo.mp4" type="video/mp4">
+          Seu navegador não suporta vídeo HTML5. <a href="tvvideo.mp4" download>Baixe o vídeo</a>.
+        </video>
+
+        <!-- overlay com frase promocional -->
+        <div class="video-overlay" aria-hidden="true">
+          <div class="line1">Transforme sua TV em Smart de modo fácil.</div>
+          <div class="line2">Depois: <strong>Compre agora!</strong></div>
+        </div>
+
+        <!-- controle rápido (ex.: abrir em nova aba/fullscreen) -->
+        <div class="video-controls" aria-hidden="true">
+          <a class="mini-btn" id="openFullscreen">Tela cheia</a>
+          <a class="mini-btn" id="downloadVideo" href="tvvideo.mp4" download>Baixar</a>
+        </div>
       </div>
     </section>
 
@@ -89,6 +118,18 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Fullscreen helper
+    const btnFs = document.getElementById('openFullscreen');
+    const video = document.getElementById('promoVideo');
+    btnFs.addEventListener('click', () => {
+      if (video.requestFullscreen) video.requestFullscreen();
+      else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen(); // iOS Safari fallback
+      else alert('Seu navegador não suporta tela cheia via script.');
+    });
+
+    // Se quiser, descomente a linha abaixo para iniciar reprodução automática mesmo quando o usuário interagir:
+    // video.play().catch(()=>console.log('Play bloqueado até interação do usuário.'));
   </script>
 </body>
 </html>
